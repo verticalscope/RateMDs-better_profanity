@@ -175,13 +175,13 @@ class Profanity:
             next_words_indices = self._update_next_words_indices(
                 text, next_words_indices, index
             )
-            contains_swear_word, end_index = any_next_words_form_swear_word(
+            swear_word_result, end_index = any_next_words_form_swear_word(
                 cur_word, next_words_indices, self.CENSOR_WORDSET
             )
             # If censor_char is None, it implies whoever calls this function is only checking if swear words exists
-            if contains_swear_word:
+            if swear_word_result != "":
                 if censor_char is None:
-                    return cur_word
+                    return swear_word_result
                 cur_word = get_replacement_for_swear_word(censor_char)
                 skip_index = end_index
                 char = ""
@@ -199,6 +199,8 @@ class Profanity:
         # Final check
         if cur_word != "" and skip_index < len(text) - 1:
             if cur_word.lower() in self.CENSOR_WORDSET:
+                if censor_char is None:
+                    return cur_word
                 cur_word = get_replacement_for_swear_word(censor_char)
             censored_text += cur_word
         # If censor_char is None, it implies whoever calls this function is only checking if swear words exists
