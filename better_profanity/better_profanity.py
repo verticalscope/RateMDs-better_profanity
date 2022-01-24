@@ -45,7 +45,7 @@ class Profanity:
 
         if not self.CENSOR_WORDSET:
             self.load_censor_words()
-        return self._hide_swear_words(text, censor_char)
+        return self._swear_words_corrector(text, censor_char)
 
     def load_censor_words_from_file(self, filename, **kwargs):
         words = read_wordlist(filename)
@@ -65,9 +65,13 @@ class Profanity:
 
         self.CENSOR_WORDSET.update(custom_words)
 
+    def contains_what_profanity(self, text):
+        """Return the first detected swear word of the input text and if not, it returns an empty string"""
+        return self._swear_words_corrector(text, None)
+
     def contains_profanity(self, text):
-        """Return True if  the input text has any swear words."""
-        return text != self.censor(text)
+        """Return True if the input text has any swear words."""
+        return self.contains_what_profanity(text) != ""
 
     ## PRIVATE ##
 
@@ -135,7 +139,7 @@ class Profanity:
                 words_indices += self._get_next_words(text, words_indices[-1][1], 1)
         return words_indices
 
-    def _hide_swear_words(self, text, censor_char):
+    def _swear_words_corrector(self, text, censor_char):
         """Replace the swear words with censor characters."""
         censored_text = ""
         cur_word = ""
@@ -174,7 +178,10 @@ class Profanity:
             contains_swear_word, end_index = any_next_words_form_swear_word(
                 cur_word, next_words_indices, self.CENSOR_WORDSET
             )
+            # If censor_char is None, it implies whoever calls this function is only checking if swear words exists
             if contains_swear_word:
+                if censor_char is None:
+                    return cur_word
                 cur_word = get_replacement_for_swear_word(censor_char)
                 skip_index = end_index
                 char = ""
@@ -182,6 +189,8 @@ class Profanity:
 
             # If the current a swear word
             if cur_word.lower() in self.CENSOR_WORDSET:
+                if censor_char is None:
+                    return cur_word
                 cur_word = get_replacement_for_swear_word(censor_char)
 
             censored_text += cur_word + char
@@ -192,6 +201,9 @@ class Profanity:
             if cur_word.lower() in self.CENSOR_WORDSET:
                 cur_word = get_replacement_for_swear_word(censor_char)
             censored_text += cur_word
+        # If censor_char is None, it implies whoever calls this function is only checking if swear words exists
+        if censor_char is None:
+            return ""
         return censored_text
 
     def _get_start_index_of_next_word(self, text, start_idx):
