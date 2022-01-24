@@ -65,13 +65,13 @@ class Profanity:
 
         self.CENSOR_WORDSET.update(custom_words)
 
-    def contains_profanity(self, text):
-        """Return the first detected swear word if the input text has any swear words."""
+    def contains_what_profanity(self, text):
+        """Return the first detected swear word of the input text and if not, it returns an empty string"""
         return self._swear_words_corrector(text, None)
 
-    def contains_profanity_bool(self, text):
+    def contains_profanity(self, text):
         """Return True if the input text has any swear words."""
-        return self.contains_profanity(text) != ""
+        return self.contains_what_profanity(text) != ""
 
     ## PRIVATE ##
 
