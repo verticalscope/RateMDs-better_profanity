@@ -41,6 +41,8 @@ def any_next_words_form_swear_word(cur_word, words_indices, censor_words):
             full_word_with_separators,
             word_with_separators.lower(),
         )
-        if full_word in censor_words or full_word_with_separators in censor_words:
-            return True, end_index
-    return False, -1
+        if full_word in censor_words:
+            return full_word, end_index
+        elif full_word_with_separators in censor_words:
+            return full_word_with_separators, end_index
+    return "", -1
