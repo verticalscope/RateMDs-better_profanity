@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from itertools import product
-
 from .constants import ALLOWED_CHARACTERS
 
 from .utils import (
@@ -16,14 +15,14 @@ class Profanity:
     def __init__(self):
         self.CENSOR_WORDSET = set()
         self.CHARS_MAPPING = {
-            "a": ("a", "@", "*", "4"),
-            "i": ("i", "*", "l", "1"),
-            "o": ("o", "*", "0", "@"),
-            "u": ("u", "*", "v"),
-            "v": ("v", "*", "u"),
-            "l": ("l", "1"),
-            "e": ("e", "*", "3"),
-            "s": ("s", "$", "5"),
+            "a": ("a", "@", "*", "4",),
+            "i": ("i", "*", "l", "1", "!",),
+            "o": ("o", "*", "0", "@",),
+            "u": ("u", "*", "v",),
+            "v": ("v", "*", "u",),
+            "l": ("l", "1", "!",),
+            "e": ("e", "*", "3",),
+            "s": ("s", "$", "5",),
             "t": ("t", "7",),
         }
         self.MAX_NUMBER_COMBINATIONS = 1
@@ -62,8 +61,12 @@ class Profanity:
             raise TypeError(
                 "Function 'add_censor_words' only accepts list, tuple or set."
             )
-
-        self.CENSOR_WORDSET.update(custom_words)
+        # Convert all arguments to lower case. Works for tuples and lists too from re-casting into sets
+        custom_words = {word.lower() for word in custom_words}
+        custom_words_combos = set()
+        for word in custom_words:
+            custom_words_combos.update(set(self._generate_patterns_from_word(word)))
+        self.CENSOR_WORDSET.update(custom_words_combos)
 
     def contains_what_profanity(self, text):
         """Return the first detected swear word of the input text and if not, it returns an empty string"""
