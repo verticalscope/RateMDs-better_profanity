@@ -62,10 +62,9 @@ class Profanity:
                 "Function 'add_censor_words' only accepts list, tuple or set."
             )
         # Convert all arguments to lower case. Works for tuples and lists too from re-casting into sets
-        custom_words = {word.lower() for word in custom_words}
         custom_words_combos = set()
         for word in custom_words:
-            custom_words_combos.update(set(self._generate_patterns_from_word(word)))
+            custom_words_combos.update(set(self._generate_patterns_from_word(word.lower())))
         self.CENSOR_WORDSET.update(custom_words_combos)
 
     def contains_what_profanity(self, text):
