@@ -67,6 +67,19 @@ class Profanity:
             custom_words_combos.update(set(self._generate_patterns_from_word(word.lower())))
         self.CENSOR_WORDSET.update(custom_words_combos)
 
+    def remove_censor_words(self, custom_words):
+        if not isinstance(custom_words, (list, tuple, set)):
+            raise TypeError(
+                "Function 'add_censor_words' only accepts list, tuple or set."
+            )
+        # The function assumes the input custom_words are all "regular" (i.e. not leetspeak derivatives) to assure
+        # clean removal of interested words and all of their derivatives.
+        # This function is not responsible for figuring out the base form of the banned word.
+        custom_words_combos = set()
+        for word in custom_words:
+            custom_words_combos.update(set(self._generate_patterns_from_word(word.lower())))
+        self.CENSOR_WORDSET.difference_update(custom_words_combos) # If word not in CENSOR_WORDSET fxn will skip
+
     def contains_what_profanity(self, text):
         """Return the first detected swear word of the input text and if not, it returns an empty string"""
         return self._swear_words_corrector(text, None)
