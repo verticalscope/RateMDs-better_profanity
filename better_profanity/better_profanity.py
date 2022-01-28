@@ -70,7 +70,7 @@ class Profanity:
     def remove_censor_words(self, custom_words):
         if not isinstance(custom_words, (list, tuple, set)):
             raise TypeError(
-                "Function 'add_censor_words' only accepts list, tuple or set."
+                "Function 'remove_censor_words' only accepts list, tuple or set."
             )
         # The function assumes the input custom_words are all "regular" (i.e. not leetspeak derivatives) to assure
         # clean removal of interested words and all of their derivatives.
