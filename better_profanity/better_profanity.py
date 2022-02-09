@@ -244,6 +244,11 @@ class Profanity:
                 next_word += char
                 continue
             break
+            # Breaks when the index points to a disallowed char (i.e. spacing char) immediately behind an allowed char
+        if next_word != "" and start_idx == index:
+            # Catch edge case where the last char of `text` is ONE allowed char preceded by spacing chars (i.e. ".x")
+            # `index` should've pointed to the index +1 to the allowed char, but points to the allowed char itself
+            index += 1
         return next_word, index
 
     def _get_next_words(self, text, start_idx, num_of_next_words=1):
