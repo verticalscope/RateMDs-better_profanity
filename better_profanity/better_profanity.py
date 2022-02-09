@@ -262,7 +262,7 @@ class Profanity:
         start_idx_of_next_word = self._get_start_index_of_next_word(text, start_idx)
 
         # Return an empty string if there are no other words
-        if start_idx_of_next_word >= len(text) - 1:
+        if start_idx_of_next_word >= len(text):
             return [("", start_idx_of_next_word), ("", start_idx_of_next_word)]
 
         # Combine the  words into a list
